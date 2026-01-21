@@ -55,17 +55,29 @@ int main() {
     char* greeting = create_greeting(john->name);
     if (greeting == NULL) {
         fprintf(stderr, "Hiba: nem sikerult udvozletet letrehozni\n");
+        // Ha itt lépünk ki, john-t még mindig fel kell szabadítani!
+        free(john->name);
+        free(john);
         return 1;
     }
     
     printf("%s\n", greeting);
     
     // HIBA: Itt kellene felszabaditani a memoriait!
-    // De nem tesszuk...
-    // A memoria "elveszett" - a program vegere sem szabadul fel
+    // Megtesszük a javítást:
     
-    printf("\nProgram vege. (De a memoria meg mindig foglalt!)\n");
-    printf("Futtasd Valgrind-dal: make valgrind_04\n");
+    // 1. Felszabadítjuk az üdvözlő szöveget
+    free(greeting);
     
-    return 0;
+    // 2. Felszabadítjuk a struktúrán belüli nevet (különben elveszik a címe)
+    free(john->name);
+    
+    // 3. Végül felszabadítjuk magát a struktúrát
+    free(john);
+    
+    printf("\nProgram vege. (A memoria most mar felszabadult!)\n");
+    printf("Futtasd Valgrind-dal az ellenorzeshez.\n");
+
+return 0;
+
 }

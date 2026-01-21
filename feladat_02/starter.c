@@ -6,6 +6,7 @@
 int balance = 0;
 
 // TODO: Deklaralj egy pthread_mutex_t valtozot ide
+pthread_mutex_t mutex;
 
 #define NUM_THREADS 10
 #define INCREMENTS_PER_THREAD 1000
@@ -14,10 +15,12 @@ int balance = 0;
 void* deposit_money(void* arg) {
     for (int i = 0; i < INCREMENTS_PER_THREAD; i++) {
         // TODO: Zarold a mutexet itt (pthread_mutex_lock)
-        
+        pthread_mutex_lock(&mutex);
+
         balance++;
-        
+
         // TODO: Oldsd fel a mutexet itt (pthread_mutex_unlock)
+        pthread_mutex_unlock(&mutex);
     }
     return NULL;
 }
@@ -28,6 +31,7 @@ int main() {
     // TODO: Inicializald a mutexet
     // Vagy hasznald: pthread_mutex_init(&mutex, NULL);
     // Vagy globalis szinten: pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_init(&mutex, NULL);
     
     printf("Kezdeti egyenleg: %d dollar\n", balance);
     printf("Inditas: %d penztaros, mindegyik %d dollar befizetesevel...\n", 
@@ -51,6 +55,7 @@ int main() {
     }
     
     // TODO: Suntessed meg a mutexet (pthread_mutex_destroy)
+    pthread_mutex_destroy(&mutex);
     
     printf("Vegso egyenleg: %d dollar\n", balance);
     printf("Vart egyenleg: %d dollar\n", NUM_THREADS * INCREMENTS_PER_THREAD);
